@@ -16,10 +16,12 @@ public class MessagePublisher {
     private final KafkaTemplate<String, Object> template;
 
     public void sendMessageToTopic(String message) {
-        CompletableFuture<SendResult<String, Object>> future = template.send("2nd-topic", message);
+        CompletableFuture<SendResult<String, Object>> future = template.send("3rd-topic", message);
         future.whenComplete((result, ex) -> {
             if (ex == null) {
-                log.info("Send message =>> [{}] with offset =>> [{}]", message, result.getRecordMetadata().offset());
+                log.info("Send message =>> [{}] and Topic =>> [{}] with offset =>> [{}] and Partition =>> [{}]",
+                        message, result.getRecordMetadata().topic(), result.getRecordMetadata().offset(),
+                        result.getRecordMetadata().partition());
             } else {
                 log.error("Unable to send message =>> [{}] due to =>> [{}]", message, ex.getMessage());
             }
